@@ -1,7 +1,7 @@
 /*
 * File: 	scheduler.c
 * Date: 	2025年9月29日
-* Author: 	jinjiale
+* Author: 	jin
 
 * Description: 	
 * Version: 		
@@ -32,7 +32,7 @@ static void Loop_1000Hz(void) //1ms执行一次
     if(pwm_disble)
     {
         pwm_alloff();
-        pwm_setduty_a(2000);
+        pwm_setduty_a(0);
     }
     else
     {

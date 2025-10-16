@@ -1,7 +1,7 @@
 /*
 * File: 	pwm.h
 * Date: 	2025Äê10ÔÂ14ÈÕ
-* Author: 	jinjiale
+* Author: 	jin
 
 * Description: 	
 * Version: 		

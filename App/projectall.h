@@ -1,7 +1,7 @@
 /*
 * File: 	projectall.h
 * Date: 	2025Äê10ÔÂ14ÈÕ
-* Author: 	jinjiale
+* Author: 	jin
 
 * Description: 	
 * Version: 		
@@ -17,6 +17,7 @@
 
 #include "pwm.h"
 
+#include "samp.h"
 #include "scheduler.h"
 
 //---------------------------Macro-----------------------------------
