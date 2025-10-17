@@ -31,6 +31,7 @@
 void pwm_alloff()
 {
     EPWM_forceTripZoneEvent(ePWM_Ap_BASE,EPWM_TZ_FORCE_EVENT_DCAEVT1);
+    EPWM_forceTripZoneEvent(ePWM_Bp_BASE,EPWM_TZ_FORCE_EVENT_DCAEVT1);
 }
 
 /****************************************************************
@@ -44,6 +45,9 @@ void pwm_allon()
 {
     EPWM_clearTripZoneFlag(ePWM_Ap_BASE,EPWM_TZ_FORCE_EVENT_DCAEVT1);
     EPWM_clearTripZoneFlag(ePWM_Ap_BASE,EPWM_TZ_FORCE_EVENT_OST);
+
+    EPWM_clearTripZoneFlag(ePWM_Bp_BASE,EPWM_TZ_FORCE_EVENT_DCAEVT1);
+    EPWM_clearTripZoneFlag(ePWM_Bp_BASE,EPWM_TZ_FORCE_EVENT_OST);
 }
 
 /****************************************************************
@@ -56,6 +60,10 @@ void pwm_allon()
 void pwm_setduty_a(uint16_t duty)
 {
     EPWM_setCounterCompareValue(ePWM_Ap_BASE,EPWM_COUNTER_COMPARE_A,duty);
+}
+void pwm_setduty_b(uint16_t duty)
+{
+    EPWM_setCounterCompareValue(ePWM_Bp_BASE,EPWM_COUNTER_COMPARE_A,duty);
 }
 
 

@@ -56,6 +56,7 @@ void samp_Init()
         Ain[i].Cali_A = 1;
         Ain[i].Cali_B = 0;
     }
+
     Ain[eCurr_OutA].Gain_A2R = cSAMP_GAIN_CURR;
     Ain[eCurr_OutB].Gain_A2R = cSAMP_GAIN_CURR;
     Ain[eCurr_OutC].Gain_A2R = cSAMP_GAIN_CURR;
@@ -65,10 +66,15 @@ void samp_Init()
     Ain[eVolt_InA].Gain_A2R = cSAMP_GAIN_VOLT;
     Ain[eVolt_InB].Gain_A2R = cSAMP_GAIN_VOLT;
     Ain[eVolt_InC].Gain_A2R = cSAMP_GAIN_VOLT;
-
 }
-
-uint16_t samp_Adc2Real_Update(AdcSocName_enum id,uint16_t ad)
+/****************************************************************
+* Function:     samp_updateAdc2Real_
+* Description:
+* Input:
+* Output: None
+* Return: None
+****************************************************************/
+uint16_t samp_updateAdc2Real_(AdcSocName_enum id,uint16_t ad)
 {
     if(id >= cADC_SOCx_NUM)
     {
@@ -79,18 +85,41 @@ uint16_t samp_Adc2Real_Update(AdcSocName_enum id,uint16_t ad)
                     * Ain[id].Cali_A + Ain[id].Cali_B;
     return 1;
 }
-
-float samp_GetReal(AdcSocName_enum id)
+/****************************************************************
+* Function:     samp_set
+* Description:
+* Input:
+* Output: None
+* Return: None
+****************************************************************/
+uint16_t samp_setCaliPara(AdcSocName_enum id,float a,float b)
+{
+    if(id >= cADC_SOCx_NUM)
+    {
+        return 0;
+    }
+    Ain[id].Cali_A = a;
+    Ain[id].Cali_B = b;
+    return 1;
+}
+/****************************************************************
+* Function:     samp_Get
+* Description:
+* Input:
+* Output: None
+* Return: None
+****************************************************************/
+float samp_getReal(AdcSocName_enum id)
 {
     return Ain[id].Real;
 }
 
-float samp_GetPu(AdcSocName_enum id)
+float samp_getPu(AdcSocName_enum id)
 {
     return Ain[id].Pu;
 }
 
-float samp_GetAd(AdcSocName_enum id)
+float samp_getAd(AdcSocName_enum id)
 {
     return Ain[id].Ad;
 }

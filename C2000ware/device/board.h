@@ -59,6 +59,10 @@ extern "C"
 //*****************************************************************************
 
 //
+// ANALOG -> myANALOGPinMux0 Pinmux
+//
+
+//
 // EPWM2 -> ePWM_Ap Pinmux
 //
 //
@@ -73,14 +77,67 @@ extern "C"
 #define GPIO_PIN_EPWM2_B 3
 #define ePWM_Ap_EPWMB_GPIO 3
 #define ePWM_Ap_EPWMB_PIN_CONFIG GPIO_3_EPWM2_B
+
+//
+// EPWM5 -> ePWM_Trigger Pinmux
+//
+//
+// EPWM5_A - GPIO Settings
+//
+#define GPIO_PIN_EPWM5_A 16
+#define ePWM_Trigger_EPWMA_GPIO 16
+#define ePWM_Trigger_EPWMA_PIN_CONFIG GPIO_16_EPWM5_A
+//
+// EPWM5_B - GPIO Settings
+//
+#define GPIO_PIN_EPWM5_B 17
+#define ePWM_Trigger_EPWMB_GPIO 17
+#define ePWM_Trigger_EPWMB_PIN_CONFIG GPIO_17_EPWM5_B
+
+//
+// EPWM4 -> ePWM_Bp Pinmux
+//
+//
+// EPWM4_A - GPIO Settings
+//
+#define GPIO_PIN_EPWM4_A 22
+#define ePWM_Bp_EPWMA_GPIO 22
+#define ePWM_Bp_EPWMA_PIN_CONFIG GPIO_22_EPWM4_A
+//
+// EPWM4_B - GPIO Settings
+//
+#define GPIO_PIN_EPWM4_B 23
+#define ePWM_Bp_EPWMB_GPIO 23
+#define ePWM_Bp_EPWMB_PIN_CONFIG GPIO_23_EPWM4_B
 //
 // GPIO5 - GPIO Settings
 //
-#define LED1_GPIO_GPIO_PIN_CONFIG GPIO_5_GPIO5
+#define LED1_GPIO_PIN_CONFIG GPIO_5_GPIO5
 //
 // GPIO45 - GPIO Settings
 //
-#define LED2_GPIO_GPIO_PIN_CONFIG GPIO_45_GPIO45
+#define LED2_GPIO_PIN_CONFIG GPIO_45_GPIO45
+
+//*****************************************************************************
+//
+// ADC Configurations
+//
+//*****************************************************************************
+#define ADC_A_BASE ADCA_BASE
+#define ADC_A_RESULT_BASE ADCARESULT_BASE
+#define ADC_A_SOC0 ADC_SOC_NUMBER0
+#define ADC_A_FORCE_SOC0 ADC_FORCE_SOC0
+#define ADC_A_SAMPLE_WINDOW_SOC0 150
+#define ADC_A_TRIGGER_SOURCE_SOC0 ADC_TRIGGER_EPWM2_SOCA
+#define ADC_A_CHANNEL_SOC0 ADC_CH_ADCIN0
+void ADC_A_init();
+
+
+//*****************************************************************************
+//
+// ASYSCTL Configurations
+//
+//*****************************************************************************
 
 //*****************************************************************************
 //
@@ -89,6 +146,20 @@ extern "C"
 //*****************************************************************************
 #define CpuTimer0_BASE CPUTIMER0_BASE
 void CpuTimer0_init();
+
+//*****************************************************************************
+//
+// DMA Configurations
+//
+//*****************************************************************************
+extern const void *Dma_SourceAddr;
+extern const void *Dma_DestinationAddr;
+#define DMA_A_BASE DMA_CH1_BASE 
+#define DMA_A_BURSTSIZE 16U
+#define DMA_A_TRANSFERSIZE 2U
+#define DMA_A_SRC_WRAPSIZE 32U
+#define DMA_A_DEST_WRAPSIZE 32U
+void DMA_A_init();
 
 //*****************************************************************************
 //
@@ -103,22 +174,74 @@ void CpuTimer0_init();
 #define ePWM_Ap_CMPB 0
 #define ePWM_Ap_CMPC 0
 #define ePWM_Ap_CMPD 0
-#define ePWM_Ap_DBRED 200
-#define ePWM_Ap_DBFED 200
+#define ePWM_Ap_DBRED 100
+#define ePWM_Ap_DBFED 100
 #define ePWM_Ap_TZA_ACTION EPWM_TZ_ACTION_LOW
 #define ePWM_Ap_TZB_ACTION EPWM_TZ_ACTION_LOW
 #define ePWM_Ap_OSHT_SOURCES EPWM_TZ_SIGNAL_DCAEVT1
+#define ePWM_Ap_TZ_INTERRUPT_SOURCES EPWM_TZ_INTERRUPT_DCAEVT1
 #define ePWM_Ap_INTERRUPT_SOURCE EPWM_INT_TBCTR_DISABLED
+#define ePWM_Trigger_BASE EPWM5_BASE
+#define ePWM_Trigger_TBPRD 500
+#define ePWM_Trigger_COUNTER_MODE EPWM_COUNTER_MODE_UP_DOWN
+#define ePWM_Trigger_TBPHS 2
+#define ePWM_Trigger_CMPA 0
+#define ePWM_Trigger_CMPB 0
+#define ePWM_Trigger_CMPC 0
+#define ePWM_Trigger_CMPD 0
+#define ePWM_Trigger_DBRED 0
+#define ePWM_Trigger_DBFED 0
+#define ePWM_Trigger_TZA_ACTION EPWM_TZ_ACTION_HIGH_Z
+#define ePWM_Trigger_TZB_ACTION EPWM_TZ_ACTION_HIGH_Z
+#define ePWM_Trigger_INTERRUPT_SOURCE EPWM_INT_TBCTR_DISABLED
+#define ePWM_Bp_BASE EPWM4_BASE
+#define ePWM_Bp_TBPRD 2500
+#define ePWM_Bp_COUNTER_MODE EPWM_COUNTER_MODE_UP_DOWN
+#define ePWM_Bp_TBPHS 2
+#define ePWM_Bp_CMPA 1000
+#define ePWM_Bp_CMPB 0
+#define ePWM_Bp_CMPC 0
+#define ePWM_Bp_CMPD 0
+#define ePWM_Bp_DBRED 100
+#define ePWM_Bp_DBFED 100
+#define ePWM_Bp_TZA_ACTION EPWM_TZ_ACTION_LOW
+#define ePWM_Bp_TZB_ACTION EPWM_TZ_ACTION_LOW
+#define ePWM_Bp_OSHT_SOURCES EPWM_TZ_SIGNAL_DCAEVT1
+#define ePWM_Bp_INTERRUPT_SOURCE EPWM_INT_TBCTR_DISABLED
 
 //*****************************************************************************
 //
 // GPIO Configurations
 //
 //*****************************************************************************
-#define LED1_GPIO 5
-void LED1_GPIO_init();
-#define LED2_GPIO 45
-void LED2_GPIO_init();
+#define LED1 5
+void LED1_init();
+#define LED2 45
+void LED2_init();
+
+//*****************************************************************************
+//
+// INTERRUPT Configurations
+//
+//*****************************************************************************
+
+// Interrupt Settings for INT_ADC_A_1
+// ISR need to be defined for the registered interrupts
+#define INT_ADC_A_1 INT_ADCA1
+#define INT_ADC_A_1_INTERRUPT_ACK_GROUP INTERRUPT_ACK_GROUP1
+extern __interrupt void INT_ADC_A_1_ISR(void);
+
+// Interrupt Settings for INT_ePWM_Ap_TZ
+// ISR need to be defined for the registered interrupts
+#define INT_ePWM_Ap_TZ INT_EPWM2_TZ
+#define INT_ePWM_Ap_TZ_INTERRUPT_ACK_GROUP INTERRUPT_ACK_GROUP2
+extern __interrupt void INT_ePWM_Ap_TZ_ISR(void);
+
+// Interrupt Settings for INT_DMA_A
+// ISR need to be defined for the registered interrupts
+#define INT_DMA_A INT_DMA_CH1
+#define INT_DMA_A_INTERRUPT_ACK_GROUP INTERRUPT_ACK_GROUP7
+extern __interrupt void INT_DMA_A_ISR(void);
 
 //*****************************************************************************
 //
@@ -132,9 +255,13 @@ void LED2_GPIO_init();
 //
 //*****************************************************************************
 void	Board_init();
+void	ADC_init();
+void	ASYSCTL_init();
 void	CPUTIMER_init();
+void	DMA_init();
 void	EPWM_init();
 void	GPIO_init();
+void	INTERRUPT_init();
 void	SYNC_init();
 void	PinMux_init();
 
