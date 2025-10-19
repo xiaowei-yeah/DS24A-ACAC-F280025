@@ -17,8 +17,8 @@
 #define cADC_COMDE_FULL     (4095)
 #define cADC_VREF           (3.3f)
 
-#define cSAMP_GAIN_VOLT     (1)
-#define cSAMP_GAIN_CURR     (1)
+#define cSAMP_GAIN_VOLT     (53.0f*cADC_VREF/cADC_COMDE_FULL)
+#define cSAMP_GAIN_CURR     (cADC_VREF/cADC_COMDE_FULL/0.132f)
 
 typedef struct {
     float Ad;
@@ -31,6 +31,8 @@ typedef struct {
 }AdcCali_typedef;
 
 //--------------------------------Function declaration---------------------------------
+
+uint16_t dma_getBuff(uint16_t p);
 
 //----------------------------------Value declaration----------------------------------
 
@@ -74,7 +76,7 @@ void samp_Init()
 * Output: None
 * Return: None
 ****************************************************************/
-uint16_t samp_updateAdc2Real_(AdcSocName_enum id,uint16_t ad)
+uint16_t samp_updateAdc2Real(AdcSocName_enum id,uint16_t ad)
 {
     if(id >= cADC_SOCx_NUM)
     {
@@ -85,6 +87,14 @@ uint16_t samp_updateAdc2Real_(AdcSocName_enum id,uint16_t ad)
                     * Ain[id].Cali_A + Ain[id].Cali_B;
     return 1;
 }
+
+
+void samp_UpdateAll()
+{
+    samp_updateAdc2Real(eCurr_OutA, (dma_getBuff(0)+dma_getBuff(16))>>1 );
+    samp_updateAdc2Real(eVolt_OutA, AdcaResultRegs.ADCRESULT0);
+}
+
 /****************************************************************
 * Function:     samp_set
 * Description:
@@ -123,5 +133,7 @@ float samp_getAd(AdcSocName_enum id)
 {
     return Ain[id].Ad;
 }
+
+
 
 //---------------------------------------------end of this file----------------------------------------------

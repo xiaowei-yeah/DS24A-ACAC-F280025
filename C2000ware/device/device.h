@@ -53,7 +53,7 @@ extern "C"
 //
 #include "driverlib.h"
 #include "F28002x_device.h"     // F2837xS Headerfile Include File
-
+#include "clocktree.h"
 //
 // Check for invalid compile flags
 //
@@ -273,7 +273,7 @@ extern "C"
 // To use INTOSC as the clock source, comment the #define USE_PLL_SRC_XTAL,
 // and uncomment the #define USE_PLL_SRC_INTOSC
 //
-#define USE_PLL_SRC_XTAL
+//#define USE_PLL_SRC_XTAL
 //#define USE_PLL_SRC_INTOSC
 
 #if defined(USE_PLL_SRC_XTAL)
@@ -326,7 +326,7 @@ extern "C"
 // low speed peripheral clock divider of 4. Update the code below if a
 // different LSPCLK divider is used!
 //
-#define DEVICE_LSPCLK_FREQ          (DEVICE_SYSCLK_FREQ / 4)
+//#define DEVICE_LSPCLK_FREQ          (DEVICE_SYSCLK_FREQ / 4)
 
 //*****************************************************************************
 //

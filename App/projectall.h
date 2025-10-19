@@ -10,7 +10,7 @@
 #define APP_PROJECTALL_H_
 
 //--------------------------Include----------------------------------------
-
+#include "math.h"
 #include <device.h>
 #include <driverlib.h>
 #include <board.h>
