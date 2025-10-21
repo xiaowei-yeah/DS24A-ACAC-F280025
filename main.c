@@ -21,6 +21,8 @@ void main(void)
     //
     // Initializes system control, device clock, and peripherals
     //
+
+
     Device_init();
 
     //
@@ -35,6 +37,7 @@ void main(void)
     //
     Interrupt_initVectorTable();
 
+
     //
     // Board Initialization
     //
@@ -42,6 +45,8 @@ void main(void)
 
     SysCtl_enablePeripheral(SYSCTL_PERIPH_CLK_TBCLKSYNC);
 
+
+    samp_Init();
     Scheduler_Setup();
 
     //

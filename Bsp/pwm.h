@@ -17,8 +17,8 @@
 
 void pwm_alloff();
 void pwm_allon();
-void pwm_setduty_a(uint16_t duty);
-
+void pwm_setduty_a(float duty);
+void pwm_setduty_b(float duty);
 
 #endif /* BSP_PWM_H_ */
 //---------------------------------------------end of this file----------------------------------------------

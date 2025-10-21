@@ -30,7 +30,8 @@ typedef enum
 //--------------------Function declaration---------------------------------
 
 void samp_Init();
-uint16_t samp_updateAdc2Real_(AdcSocName_enum id,uint16_t ad);
+void samp_UpdateAll();
+uint16_t samp_updateAdc2Real(AdcSocName_enum id,uint16_t ad);
 uint16_t samp_setCaliPara(AdcSocName_enum id,float a,float b);
 float samp_getReal(AdcSocName_enum id);
 float samp_getPu(AdcSocName_enum id);

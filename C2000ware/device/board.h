@@ -117,6 +117,10 @@ extern "C"
 // GPIO45 - GPIO Settings
 //
 #define LED2_GPIO_PIN_CONFIG GPIO_45_GPIO45
+//
+// GPIO41 - GPIO Settings
+//
+#define PWM_EN_GPIO_PIN_CONFIG GPIO_41_GPIO41
 
 //*****************************************************************************
 //
@@ -129,8 +133,17 @@ extern "C"
 #define ADC_A_FORCE_SOC0 ADC_FORCE_SOC0
 #define ADC_A_SAMPLE_WINDOW_SOC0 150
 #define ADC_A_TRIGGER_SOURCE_SOC0 ADC_TRIGGER_EPWM2_SOCA
-#define ADC_A_CHANNEL_SOC0 ADC_CH_ADCIN0
+#define ADC_A_CHANNEL_SOC0 ADC_CH_ADCIN6
 void ADC_A_init();
+
+#define ADC_C_BASE ADCC_BASE
+#define ADC_C_RESULT_BASE ADCCRESULT_BASE
+#define ADC_C_SOC0 ADC_SOC_NUMBER0
+#define ADC_C_FORCE_SOC0 ADC_FORCE_SOC0
+#define ADC_C_SAMPLE_WINDOW_SOC0 150
+#define ADC_C_TRIGGER_SOURCE_SOC0 ADC_TRIGGER_EPWM2_SOCA
+#define ADC_C_CHANNEL_SOC0 ADC_CH_ADCIN6
+void ADC_C_init();
 
 
 //*****************************************************************************
@@ -154,12 +167,12 @@ void CpuTimer0_init();
 //*****************************************************************************
 extern const void *Dma_SourceAddr;
 extern const void *Dma_DestinationAddr;
-#define DMA_A_BASE DMA_CH1_BASE 
-#define DMA_A_BURSTSIZE 16U
-#define DMA_A_TRANSFERSIZE 2U
-#define DMA_A_SRC_WRAPSIZE 32U
-#define DMA_A_DEST_WRAPSIZE 32U
-void DMA_A_init();
+#define DMA_C_BASE DMA_CH1_BASE 
+#define DMA_C_BURSTSIZE 16U
+#define DMA_C_TRANSFERSIZE 2U
+#define DMA_C_SRC_WRAPSIZE 16U
+#define DMA_C_DEST_WRAPSIZE 32U
+void DMA_C_init();
 
 //*****************************************************************************
 //
@@ -218,6 +231,8 @@ void DMA_A_init();
 void LED1_init();
 #define LED2 45
 void LED2_init();
+#define PWM_EN 41
+void PWM_EN_init();
 
 //*****************************************************************************
 //
@@ -225,11 +240,11 @@ void LED2_init();
 //
 //*****************************************************************************
 
-// Interrupt Settings for INT_ADC_A_1
+// Interrupt Settings for INT_DMA_C
 // ISR need to be defined for the registered interrupts
-#define INT_ADC_A_1 INT_ADCA1
-#define INT_ADC_A_1_INTERRUPT_ACK_GROUP INTERRUPT_ACK_GROUP1
-extern __interrupt void INT_ADC_A_1_ISR(void);
+#define INT_DMA_C INT_DMA_CH1
+#define INT_DMA_C_INTERRUPT_ACK_GROUP INTERRUPT_ACK_GROUP7
+extern __interrupt void INT_DMA_C_ISR(void);
 
 // Interrupt Settings for INT_ePWM_Ap_TZ
 // ISR need to be defined for the registered interrupts
@@ -237,11 +252,11 @@ extern __interrupt void INT_ADC_A_1_ISR(void);
 #define INT_ePWM_Ap_TZ_INTERRUPT_ACK_GROUP INTERRUPT_ACK_GROUP2
 extern __interrupt void INT_ePWM_Ap_TZ_ISR(void);
 
-// Interrupt Settings for INT_DMA_A
+// Interrupt Settings for INT_ADC_C_1
 // ISR need to be defined for the registered interrupts
-#define INT_DMA_A INT_DMA_CH1
-#define INT_DMA_A_INTERRUPT_ACK_GROUP INTERRUPT_ACK_GROUP7
-extern __interrupt void INT_DMA_A_ISR(void);
+#define INT_ADC_C_1 INT_ADCC1
+#define INT_ADC_C_1_INTERRUPT_ACK_GROUP INTERRUPT_ACK_GROUP1
+extern __interrupt void INT_ADC_C_1_ISR(void);
 
 //*****************************************************************************
 //
