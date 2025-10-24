@@ -15,10 +15,16 @@
 #include <driverlib.h>
 #include <board.h>
 
+#include "fsm.h"
+#include "globals.h"
+
 #include "pwm.h"
 
 #include "samp.h"
 #include "scheduler.h"
+
+#include "acac.h"
+
 
 //---------------------------Macro-----------------------------------
 

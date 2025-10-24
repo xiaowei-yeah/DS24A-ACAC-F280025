@@ -56,6 +56,7 @@ enum substate_enum
 void sFSM_Run(void);
 void task_TurnStandByMode_Func();
 void task_TurnShutdownMode_Func();
+static enum state_enum sfsm_GetState(void);
 
 #endif /* APP_FRAME_FSM_H_ */
 

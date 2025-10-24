@@ -46,7 +46,11 @@ void main(void)
     SysCtl_enablePeripheral(SYSCTL_PERIPH_CLK_TBCLKSYNC);
 
 
+
+    GlobalsVarInit();
+
     samp_Init();
+
     Scheduler_Setup();
 
     //

@@ -9,7 +9,6 @@
 //------------------------------------------Include----------------------------------------
 
 #include "projectall.h"
-#include "fsm.h"
 
 //-------------------------------------------Macro-----------------------------------------
 
@@ -34,7 +33,7 @@ static enum substate_enum FSM_SubState = State_Sub_Init;
 static uint16_t FSM_TurnStandByMode = 0;
 static uint16_t FSM_TurnShutdownMode = 0;
 
-static enum state_enum *pFSM_ParentState = &FSM_ParentState;
+static enum state_enum *pFSM_ParentState = &Sys.State;
 static enum substate_enum *pFSM_SubState = &FSM_SubState;
 static uint16_t *pFSM_TurnStandByMode = &FSM_TurnStandByMode;
 static uint16_t *pFSM_TurnShutdownMode = &FSM_TurnShutdownMode;
@@ -220,6 +219,7 @@ void sFSM_Run(void)
         default:
         break;
     }
+
 }
 
 /****************************************************************
@@ -284,6 +284,11 @@ static void sfsm_SetSubState(enum substate_enum state)
 {
     sfsm_ResetDelay();
     *pFSM_SubState = state;
+}
+
+static enum state_enum sfsm_GetState(void)
+{
+    return *pFSM_ParentState;
 }
 
 /****************************************************************
