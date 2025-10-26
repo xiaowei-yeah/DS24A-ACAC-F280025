@@ -24,18 +24,18 @@ typedef enum
   eVolt_InA      = 6,
   eVolt_InB      = 7,
   eVolt_InC      = 8,
-  eSocName_End
-}AdcSocName_enum;
+  eAdcName_End
+}AdcName_enum;
 
 //--------------------Function declaration---------------------------------
 
 void samp_Init();
 void samp_UpdateAll();
-uint16_t samp_updateAdc2Real(AdcSocName_enum id,uint16_t ad);
-uint16_t samp_setCaliPara(AdcSocName_enum id,float a,float b);
-float samp_getReal(AdcSocName_enum id);
-float samp_getPu(AdcSocName_enum id);
-float samp_getAd(AdcSocName_enum id);
+uint16_t samp_updateAdc2Real(AdcName_enum id,uint16_t ad);
+uint16_t samp_setCaliPara(AdcName_enum id,float a,float b);
+float samp_getReal(AdcName_enum id);
+float samp_getPu(AdcName_enum id);
+float samp_getAd(AdcName_enum id);
 
 #endif /* APP_SAMP_H_ */
 //---------------------------------------------end of this file----------------------------------------------

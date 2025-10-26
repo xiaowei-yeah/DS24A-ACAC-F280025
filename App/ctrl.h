@@ -47,10 +47,16 @@ typedef struct ctrl_2p2z_TyprDef{
     float a1;
     float max;
     float min;
+    float imin;
 
     float ref;
     float fbk;
+    float err;
+    float err1;
+    float err2;
     float out;
+    float out1;
+    float out2;
 
 } ctrl_2p2z_TyprDef;
 
@@ -80,6 +86,7 @@ typedef struct ctrl_spll_TyprDef{
     float               ui;
     float               wt;
     float               w;
+    float               wn;
     float               ud;
     float               uq;
     ctrl_sogi_TyprDef   sogi;

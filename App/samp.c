@@ -13,7 +13,7 @@
 
 //---------------------------------------Macro-----------------------------------------
 
-#define cADC_SOCx_NUM       (eSocName_End)
+#define cADC_ALL_NUM       (eAdcName_End)
 #define cADC_COMDE_FULL     (4095)
 #define cADC_VREF           (3.3f)
 
@@ -38,7 +38,7 @@ uint16_t dma_getBuff(uint16_t p);
 
 //----------------------------------Value definition-----------------------------------
 
-static AdcCali_typedef Ain[cADC_SOCx_NUM];
+static AdcCali_typedef Ain[cADC_ALL_NUM];
 
 //--------------------------------Function definition----------------------------------
 
@@ -51,7 +51,7 @@ static AdcCali_typedef Ain[cADC_SOCx_NUM];
 ****************************************************************/
 void samp_Init()
 {
-    for(uint16_t i = 0; i < cADC_SOCx_NUM; i++)
+    for(uint16_t i = 0; i < cADC_ALL_NUM; i++)
     {
         Ain[i].Gain_A2R = 1;
         Ain[i].Offset = -cADC_COMDE_FULL/2;
@@ -76,9 +76,9 @@ void samp_Init()
 * Output: None
 * Return: None
 ****************************************************************/
-uint16_t samp_updateAdc2Real(AdcSocName_enum id,uint16_t ad)
+uint16_t samp_updateAdc2Real(AdcName_enum id,uint16_t ad)
 {
-    if(id >= cADC_SOCx_NUM)
+    if(id >= cADC_ALL_NUM)
     {
         return 0;
     }
@@ -102,9 +102,9 @@ void samp_UpdateAll()
 * Output: None
 * Return: None
 ****************************************************************/
-uint16_t samp_setCaliPara(AdcSocName_enum id,float a,float b)
+uint16_t samp_setCaliPara(AdcName_enum id,float a,float b)
 {
-    if(id >= cADC_SOCx_NUM)
+    if(id >= cADC_ALL_NUM)
     {
         return 0;
     }
@@ -119,17 +119,17 @@ uint16_t samp_setCaliPara(AdcSocName_enum id,float a,float b)
 * Output: None
 * Return: None
 ****************************************************************/
-float samp_getReal(AdcSocName_enum id)
+float samp_getReal(AdcName_enum id)
 {
     return Ain[id].Real;
 }
 
-float samp_getPu(AdcSocName_enum id)
+float samp_getPu(AdcName_enum id)
 {
     return Ain[id].Pu;
 }
 
-float samp_getAd(AdcSocName_enum id)
+float samp_getAd(AdcName_enum id)
 {
     return Ain[id].Ad;
 }
