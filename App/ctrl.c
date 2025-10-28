@@ -13,25 +13,24 @@
 
 //-------------------------------------------Macro-----------------------------------------
 
+#define mPi     (3.141592654f)
+#define m2Pi    (6.283185308f)
+#define mPi2    (1.570796327f)
+#define mPi3    (1.047197551f)
+#define mSqrt2  (1.414213562f)
+#define m2Sqrt2 (2.828427125f)
+#define mSqrt3  (1.732050808f)
+#define m2Sqrt3 (3.464101615f)
+#define m3Sqrt3 (5.196152423f)
+
 //------------------------------------Function declaration---------------------------------
 
-void ctrl_sogi_Init(ctrl_sogi_TyprDef *self, float kp ,float ts,float wn);
-void ctrl_sogi_Run(ctrl_sogi_TyprDef *self, float ui);
 
-void ctrl_spll_Init(ctrl_spll_TyprDef *self, float ts, float wn);
-void ctrl_spll_Run(ctrl_spll_TyprDef *self, float ui);
-
-void ctrl_pi_Init(ctrl_pi_TyprDef *self, float kp,float ki,float max,float min,float ts);
-float ctrl_pi_Run(ctrl_pi_TyprDef *self, float ref,float fbk);
-
-void ctrl_2p2z_Init(ctrl_2p2z_TyprDef *self, float b0,float b1,float b2,float a1,float a2,float max,float min);
-float ctrl_2p2z_Run(ctrl_2p2z_TyprDef *self, float ref,float fbk);
 
 //--------------------------------------Struct And Type------------------------------------
 
 //-------------------------------------------Value-----------------------------------------
 
-ctrl_spll_TyprDef spll;
 
 //------------------------------------Function definition----------------------------------
 
@@ -144,7 +143,7 @@ void ctrl_spll_Run(ctrl_spll_TyprDef *self, float ui)
 
     self->w = self->wn + self->pi.out;
     self->wt += self->w * self->pi.ts;
-    self->wt = self->wt >= 2*3.1415926f ? self->wt - 2*3.1415926f : self->wt;
+    self->wt = self->wt >= m2Pi ? self->wt - m2Pi : self->wt;
 }
 
 /****************************************************************

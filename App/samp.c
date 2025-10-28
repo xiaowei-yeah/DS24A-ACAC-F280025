@@ -20,6 +20,18 @@
 #define cSAMP_GAIN_VOLT     (53.0f*cADC_VREF/cADC_COMDE_FULL)
 #define cSAMP_GAIN_CURR     (cADC_VREF/cADC_COMDE_FULL/0.132f)
 
+
+typedef struct {
+    float ui;
+    float pu;
+    float real;
+    float sum1;
+    float sum2;
+    uint16_t cnt;
+    uint16_t lastPN;
+
+}Rms_typedef;
+
 typedef struct {
     float Ad;
     float Pu;
@@ -28,6 +40,9 @@ typedef struct {
     float Offset;
     float Cali_A;
     float Cali_B;
+
+    Rms_typedef rms;
+
 }AdcCali_typedef;
 
 //--------------------------------Function declaration---------------------------------
@@ -134,6 +149,38 @@ float samp_getAd(AdcName_enum id)
     return Ain[id].Ad;
 }
 
+
+
+
+
+/****************************************************************
+* Function:     samp_Get
+* Description:
+* Input:
+* Output: None
+* Return: None
+****************************************************************/
+float samp_RmsFunc(Rms_typedef *v ,float ui)
+{
+    v->ui = ui;
+
+    v->cnt++;
+    v->sum1 += ui*ui;
+
+    if(ui > 0 && v->lastPN == 0 && v->cnt > 10)
+    {
+        v->real = sqrtf(v->sum1/(float)v->cnt);
+        v->sum1 = 0;
+        v->lastPN = 1;
+        v->cnt = 0;
+    }
+    else if(ui < 0 && v->lastPN == 1 && v->cnt > 10)
+    {
+        v->lastPN = 0;
+    }
+
+    return v->real;
+}
 
 
 //---------------------------------------------end of this file----------------------------------------------

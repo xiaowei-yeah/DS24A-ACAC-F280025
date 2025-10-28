@@ -29,7 +29,7 @@
 void GlobalsVarInit(void)
 {
     Sys.State = State_PowerOn;
-    Sys.RunningFlg = Disable;
+    Sys.RunningFlg = eDisable;
 
     #ifdef _DebugStr
         extern char *strGlobalDebugErrInfo;

@@ -20,16 +20,17 @@
 
 //--------------------------------------Macro definition-----------------------------------
 
+
 enum en_dis_enum
 {
-    Disable     = 0,
-    Enable      = 1
+    eDisable     = 0,
+    eEnable      = 1
 };
 
 enum PN_Flg_enum
 {
-    sinFlg_N           = 0,
-    sinFlg_P           = 1
+    eSinFlg_N           = 0,
+    eSinFlg_P           = 1
 };
 
 typedef struct

@@ -61,10 +61,14 @@ void pwm_allon()
 ****************************************************************/
 void pwm_setduty_a(float duty)
 {
+    duty = duty > 0 ? duty : 0;
+    duty = duty < 0.999f ? duty : 0.999f;
     EPWM_setCounterCompareValue(ePWM_Ap_BASE,EPWM_COUNTER_COMPARE_A,duty * 2500);
 }
 void pwm_setduty_b(float duty)
 {
+    duty = duty > 0 ? duty : 0;
+    duty = duty < 0.999f ? duty : 0.999f;
     EPWM_setCounterCompareValue(ePWM_Bp_BASE,EPWM_COUNTER_COMPARE_A,duty * 2500);
 }
 

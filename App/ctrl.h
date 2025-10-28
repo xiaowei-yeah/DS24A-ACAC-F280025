@@ -98,6 +98,19 @@ typedef struct ctrl_spll_TyprDef{
 
 //------------------------------------Function declaration---------------------------------
 
+void ctrl_sogi_Init(ctrl_sogi_TyprDef *self, float kp ,float ts,float wn);
+void ctrl_sogi_Run(ctrl_sogi_TyprDef *self, float ui);
+
+void ctrl_spll_Init(ctrl_spll_TyprDef *self, float ts, float wn);
+void ctrl_spll_Run(ctrl_spll_TyprDef *self, float ui);
+
+void ctrl_pi_Init(ctrl_pi_TyprDef *self, float kp,float ki,float max,float min,float ts);
+float ctrl_pi_Run(ctrl_pi_TyprDef *self, float ref,float fbk);
+
+void ctrl_2p2z_Init(ctrl_2p2z_TyprDef *self, float b0,float b1,float b2,float a1,float a2,float max,float min);
+float ctrl_2p2z_Run(ctrl_2p2z_TyprDef *self, float ref,float fbk);
+
+
 
 #endif /* APP_CTRL_H_ */
 
