@@ -187,7 +187,6 @@ void PinMux_init()
 //*****************************************************************************
 void ADC_init(){
 	ADC_A_init();
-	ADC_C_init();
 }
 
 void ADC_A_init(){
@@ -198,7 +197,7 @@ void ADC_A_init(){
 	// This function sets the analog voltage reference to internal (with the reference voltage of 1.65V or 2.5V) or external for ADC
 	// which is same as ASysCtl APIs.
 	//
-	ADC_setVREF(ADC_A_BASE, ADC_REFERENCE_EXTERNAL, ADC_REFERENCE_VREFHI);
+	ADC_setVREF(ADC_A_BASE, ADC_REFERENCE_EXTERNAL, ADC_REFERENCE_2_5V);
 	//
 	// Configures the analog-to-digital converter module prescaler.
 	//
@@ -232,12 +231,38 @@ void ADC_A_init(){
 	// Configures a start-of-conversion (SOC) in the ADC and its interrupt SOC trigger.
 	// 	  	SOC number		: 0
 	//	  	Trigger			: ADC_TRIGGER_EPWM2_SOCA
-	//	  	Channel			: ADC_CH_ADCIN6
+	//	  	Channel			: ADC_CH_ADCIN14
 	//	 	Sample Window	: 15 SYSCLK cycles
 	//		Interrupt Trigger: ADC_INT_SOC_TRIGGER_NONE
 	//
-	ADC_setupSOC(ADC_A_BASE, ADC_SOC_NUMBER0, ADC_TRIGGER_EPWM2_SOCA, ADC_CH_ADCIN6, 40U);
+	ADC_setupSOC(ADC_A_BASE, ADC_SOC_NUMBER0, ADC_TRIGGER_EPWM2_SOCA, ADC_CH_ADCIN14, 15U);
 	ADC_setInterruptSOCTrigger(ADC_A_BASE, ADC_SOC_NUMBER0, ADC_INT_SOC_TRIGGER_NONE);
+	//
+	// Start of Conversion 1 Configuration
+	//
+	//
+	// Configures a start-of-conversion (SOC) in the ADC and its interrupt SOC trigger.
+	// 	  	SOC number		: 1
+	//	  	Trigger			: ADC_TRIGGER_EPWM2_SOCA
+	//	  	Channel			: ADC_CH_ADCIN15
+	//	 	Sample Window	: 15 SYSCLK cycles
+	//		Interrupt Trigger: ADC_INT_SOC_TRIGGER_NONE
+	//
+	ADC_setupSOC(ADC_A_BASE, ADC_SOC_NUMBER1, ADC_TRIGGER_EPWM2_SOCA, ADC_CH_ADCIN15, 15U);
+	ADC_setInterruptSOCTrigger(ADC_A_BASE, ADC_SOC_NUMBER1, ADC_INT_SOC_TRIGGER_NONE);
+	//
+	// Start of Conversion 2 Configuration
+	//
+	//
+	// Configures a start-of-conversion (SOC) in the ADC and its interrupt SOC trigger.
+	// 	  	SOC number		: 2
+	//	  	Trigger			: ADC_TRIGGER_EPWM2_SOCA
+	//	  	Channel			: ADC_CH_ADCIN1
+	//	 	Sample Window	: 15 SYSCLK cycles
+	//		Interrupt Trigger: ADC_INT_SOC_TRIGGER_NONE
+	//
+	ADC_setupSOC(ADC_A_BASE, ADC_SOC_NUMBER2, ADC_TRIGGER_EPWM2_SOCA, ADC_CH_ADCIN1, 15U);
+	ADC_setInterruptSOCTrigger(ADC_A_BASE, ADC_SOC_NUMBER2, ADC_INT_SOC_TRIGGER_NONE);
 	//
 	// ADC Interrupt 1 Configuration
 	// 		Source	: ADC_SOC_NUMBER0
@@ -249,67 +274,6 @@ void ADC_A_init(){
 	ADC_clearInterruptStatus(ADC_A_BASE, ADC_INT_NUMBER1);
 	ADC_enableContinuousMode(ADC_A_BASE, ADC_INT_NUMBER1);
 	ADC_enableInterrupt(ADC_A_BASE, ADC_INT_NUMBER1);
-}
-
-void ADC_C_init(){
-	//
-	// ADC Initialization: Write ADC configurations and power up the ADC
-	//
-	// Set the analog voltage reference selection and ADC module's offset trims.
-	// This function sets the analog voltage reference to internal (with the reference voltage of 1.65V or 2.5V) or external for ADC
-	// which is same as ASysCtl APIs.
-	//
-	ADC_setVREF(ADC_C_BASE, ADC_REFERENCE_EXTERNAL, ADC_REFERENCE_VREFHI);
-	//
-	// Configures the analog-to-digital converter module prescaler.
-	//
-	ADC_setPrescaler(ADC_C_BASE, ADC_CLK_DIV_2_0);
-	//
-	// Sets the timing of the end-of-conversion pulse
-	//
-	ADC_setInterruptPulseMode(ADC_C_BASE, ADC_PULSE_END_OF_CONV);
-	//
-	// Powers up the analog-to-digital converter core.
-	//
-	ADC_enableConverter(ADC_C_BASE);
-	//
-	// Delay for 1ms to allow ADC time to power up
-	//
-	DEVICE_DELAY_US(500);
-	//
-	// SOC Configuration: Setup ADC EPWM channel and trigger settings
-	//
-	// Disables SOC burst mode.
-	//
-	ADC_disableBurstMode(ADC_C_BASE);
-	//
-	// Sets the priority mode of the SOCs.
-	//
-	ADC_setSOCPriority(ADC_C_BASE, ADC_PRI_ALL_ROUND_ROBIN);
-	//
-	// Start of Conversion 0 Configuration
-	//
-	//
-	// Configures a start-of-conversion (SOC) in the ADC and its interrupt SOC trigger.
-	// 	  	SOC number		: 0
-	//	  	Trigger			: ADC_TRIGGER_EPWM2_SOCA
-	//	  	Channel			: ADC_CH_ADCIN6
-	//	 	Sample Window	: 15 SYSCLK cycles
-	//		Interrupt Trigger: ADC_INT_SOC_TRIGGER_NONE
-	//
-	ADC_setupSOC(ADC_C_BASE, ADC_SOC_NUMBER0, ADC_TRIGGER_EPWM2_SOCA, ADC_CH_ADCIN6, 25U);
-	ADC_setInterruptSOCTrigger(ADC_C_BASE, ADC_SOC_NUMBER0, ADC_INT_SOC_TRIGGER_NONE);
-	//
-	// ADC Interrupt 1 Configuration
-	// 		Source	: ADC_SOC_NUMBER0
-	// 		Interrupt Source: enabled
-	//		Continuous Mode	: enabled
-	//
-	//
-	ADC_setInterruptSource(ADC_C_BASE, ADC_INT_NUMBER1, ADC_SOC_NUMBER0);
-	ADC_clearInterruptStatus(ADC_C_BASE, ADC_INT_NUMBER1);
-	ADC_enableContinuousMode(ADC_C_BASE, ADC_INT_NUMBER1);
-	ADC_enableInterrupt(ADC_C_BASE, ADC_INT_NUMBER1);
 }
 
 
@@ -358,21 +322,21 @@ void CpuTimer0_init(){
 //*****************************************************************************
 void DMA_init(){
     DMA_initController();
-	DMA_C_init();
+	DMA_A_init();
 }
 
-void DMA_C_init(){
+void DMA_A_init(){
     DMA_setEmulationMode(DMA_EMULATION_FREE_RUN);
-    DMA_configAddresses(DMA_C_BASE, Dma_DestinationAddr, Dma_SourceAddr);
-    DMA_configBurst(DMA_C_BASE, 16U, 1, 1);
-    DMA_configTransfer(DMA_C_BASE, 2U, -15, 1);
-    DMA_configWrap(DMA_C_BASE, 16U, 0, 32U, 0);
-    DMA_configMode(DMA_C_BASE, DMA_TRIGGER_ADCC1, DMA_CFG_ONESHOT_DISABLE | DMA_CFG_CONTINUOUS_ENABLE | DMA_CFG_SIZE_16BIT);
-    DMA_setInterruptMode(DMA_C_BASE, DMA_INT_AT_END);
-    DMA_enableInterrupt(DMA_C_BASE);
-    DMA_disableOverrunInterrupt(DMA_C_BASE);
-    DMA_enableTrigger(DMA_C_BASE);
-    DMA_startChannel(DMA_C_BASE);
+    DMA_configAddresses(DMA_A_BASE, Dma_DestinationAddr, Dma_SourceAddr);
+    DMA_configBurst(DMA_A_BASE, 16U, 1, 1);
+    DMA_configTransfer(DMA_A_BASE, 2U, -15, 1);
+    DMA_configWrap(DMA_A_BASE, 16U, 0, 32U, 0);
+    DMA_configMode(DMA_A_BASE, DMA_TRIGGER_ADCA1, DMA_CFG_ONESHOT_DISABLE | DMA_CFG_CONTINUOUS_ENABLE | DMA_CFG_SIZE_16BIT);
+    DMA_setInterruptMode(DMA_A_BASE, DMA_INT_AT_END);
+    DMA_enableInterrupt(DMA_A_BASE);
+    DMA_disableOverrunInterrupt(DMA_A_BASE);
+    DMA_enableTrigger(DMA_A_BASE);
+    DMA_startChannel(DMA_A_BASE);
 }
 
 //*****************************************************************************
@@ -558,20 +522,20 @@ void PWM_EN_init(){
 //*****************************************************************************
 void INTERRUPT_init(){
 	
-	// Interrupt Settings for INT_DMA_C
+	// Interrupt Settings for INT_DMA_A
 	// ISR need to be defined for the registered interrupts
-	Interrupt_register(INT_DMA_C, &INT_DMA_C_ISR);
-	Interrupt_enable(INT_DMA_C);
+	Interrupt_register(INT_DMA_A, &INT_DMA_A_ISR);
+	Interrupt_enable(INT_DMA_A);
 	
 	// Interrupt Settings for INT_ePWM_Ap_TZ
 	// ISR need to be defined for the registered interrupts
 	Interrupt_register(INT_ePWM_Ap_TZ, &INT_ePWM_Ap_TZ_ISR);
 	Interrupt_enable(INT_ePWM_Ap_TZ);
 	
-	// Interrupt Settings for INT_ADC_C_1
+	// Interrupt Settings for INT_ADC_A_1
 	// ISR need to be defined for the registered interrupts
-	Interrupt_register(INT_ADC_C_1, &INT_ADC_C_1_ISR);
-	Interrupt_enable(INT_ADC_C_1);
+	Interrupt_register(INT_ADC_A_1, &INT_ADC_A_1_ISR);
+	Interrupt_enable(INT_ADC_A_1);
 }
 //*****************************************************************************
 //

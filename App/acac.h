@@ -17,6 +17,7 @@
 
 //------------------------------------Function declaration---------------------------------
 
+void acac_Func(float Io ,float Vo ,float Vin);
 
 #endif /* APP_ACAC_H_ */
 

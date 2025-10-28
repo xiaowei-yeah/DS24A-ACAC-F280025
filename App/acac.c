@@ -50,6 +50,7 @@ typedef struct {
     enum en_dis_enum    en;
     enum en_dis_enum    iflg;
     enum en_dis_enum    vflg;
+    enum en_dis_enum    openloopflg;
 
     ctrl_spll_TyprDef       spll;
 //    ctrl_2p2z_TyprDef       ctrl_iPR;
@@ -90,9 +91,10 @@ void acac_init(acac_TypeDef *self)
     self->iflg = eDisable;
     self->vflg = eDisable;
 
+
     ctrl_spll_Init(&self->spll,self->ts,self->wn);
-    ctrl_pi_Init(&self->ctrl_iPI,1,0,100,-100,self->ts);
-    ctrl_pi_Init(&self->ctrl_vPI,1,0,100,-100,self->ts);
+    ctrl_pi_Init(&self->ctrl_iPI,1,10,100,-100,self->ts);
+    ctrl_pi_Init(&self->ctrl_vPI,2,20,100,-100,self->ts);
 
 }
 void acac_Init()
@@ -107,14 +109,26 @@ void acac_Init()
 * Output: None
 * Return: None
 ****************************************************************/
-void acac_func(acac_TypeDef *self)
+void acac_func(acac_TypeDef *self ,float Io ,float Vo ,float Vin)
 {
+    static uint16_t first;
+
+    self->ouputCurr = Io;
+    self->ouputVolt = Vo;
+    self->inputVolt = Vin;
+
     // 锁相
     ctrl_spll_Run(&self->spll,self->inputVolt);
-
     self->baseSin = -cosf(self->spll.wt);
 
-    static uint16_t first;
+// 直流电源输入
+//    static float wt1;
+//    wt1 += 0.01571f;
+//    if(wt1 > m2Pi)
+//    {
+//        wt1 = wt1 - m2Pi;
+//    }
+//    self->baseSin = sinf(wt1);
 
     if(self->en)
     {
@@ -139,9 +153,14 @@ void acac_func(acac_TypeDef *self)
             float ctrl_out = ctrl_pi_Run(&self->ctrl_iPI,self->targetCurr,self->ouputCurr);
             self->wm = (ctrl_out + self->ouputVolt) / self->inputVolt;
         }
+        // 开环
+        if(self->openloopflg)   // 直流输入时使用 ！！！！
+        {
+            self->wm = (self->targetVoltAm * 2.0 / self->inputVolt * self->baseSin * 0.5) + 0.5 ;
+        }
 
         // 调制输出
-        if(self->baseSin > 0)
+        if(self->inputVolt > 0)
         {
             pwm_setduty_a(self->wm);
             pwm_setduty_b(0);
@@ -155,18 +174,19 @@ void acac_func(acac_TypeDef *self)
     }
     else    // !en
     {
+        pwm_alloff();
+
         if(first == 0)
         {
-            pwm_alloff();
             acac_Init();
             first = 1;
         }
     }
 
 }
-void acac_Func()
+void acac_Func(float Io ,float Vo ,float Vin)
 {
-    acac_func(&acac);
+    acac_func(&acac,Io,Vo,Vin);
 }
 
 

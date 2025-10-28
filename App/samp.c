@@ -83,6 +83,9 @@ void samp_Init()
     Ain[eVolt_InA].Gain_A2R = cSAMP_GAIN_VOLT;
     Ain[eVolt_InB].Gain_A2R = cSAMP_GAIN_VOLT;
     Ain[eVolt_InC].Gain_A2R = cSAMP_GAIN_VOLT;
+
+    Ain[eVolt_OutA].Offset = -2017;
+    Ain[eVolt_InA].Offset = -2014;
 }
 /****************************************************************
 * Function:     samp_updateAdc2Real_
@@ -107,7 +110,8 @@ uint16_t samp_updateAdc2Real(AdcName_enum id,uint16_t ad)
 void samp_UpdateAll()
 {
     samp_updateAdc2Real(eCurr_OutA, (dma_getBuff(0)+dma_getBuff(16))>>1 );
-    samp_updateAdc2Real(eVolt_OutA, AdcaResultRegs.ADCRESULT0);
+    samp_updateAdc2Real(eVolt_OutA, (dma_getBuff(1)+dma_getBuff(17))>>1 );
+    samp_updateAdc2Real(eVolt_InA, (dma_getBuff(2)+dma_getBuff(18))>>1 );
 }
 
 /****************************************************************
@@ -154,32 +158,40 @@ float samp_getAd(AdcName_enum id)
 
 
 /****************************************************************
-* Function:     samp_Get
+* Function:     sampsamp_Rmsfunc_Get
 * Description:
 * Input:
 * Output: None
 * Return: None
 ****************************************************************/
-float samp_RmsFunc(Rms_typedef *v ,float ui)
+float samp_Rmsfunc(Rms_typedef *v ,float ui)
 {
     v->ui = ui;
 
     v->cnt++;
-    v->sum1 += ui*ui;
+    v->sum1 += v->ui*v->ui;
 
-    if(ui > 0 && v->lastPN == 0 && v->cnt > 10)
+    if(v->ui > 0 && v->lastPN == 0 && v->cnt > 250)
     {
         v->real = sqrtf(v->sum1/(float)v->cnt);
         v->sum1 = 0;
         v->lastPN = 1;
         v->cnt = 0;
     }
-    else if(ui < 0 && v->lastPN == 1 && v->cnt > 10)
+    else if(v->ui < 0 && v->lastPN == 1 && v->cnt > 50)
     {
         v->lastPN = 0;
     }
 
     return v->real;
+}
+float samp_RmsFunc(AdcName_enum id)
+{
+    if(id >= cADC_ALL_NUM)
+    {
+        return 0;
+    }
+    return samp_Rmsfunc(&Ain[id].rms,Ain[id].Real);
 }
 
 

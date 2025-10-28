@@ -27,8 +27,8 @@
 * Output: None
 * Return: None
 ****************************************************************/
-#pragma CODE_SECTION(INT_ADC_C_1_ISR,".TI.ramfunc");
-__interrupt void INT_ADC_C_1_ISR(void)
+#pragma CODE_SECTION(INT_ADC_A_1_ISR,".TI.ramfunc");
+__interrupt void INT_ADC_A_1_ISR(void)
 {
 
     Interrupt_clearACKGroup(INTERRUPT_ACK_GROUP1);
@@ -43,11 +43,14 @@ __interrupt void INT_ADC_C_1_ISR(void)
 * Output: None
 * Return: None
 ****************************************************************/
-#pragma CODE_SECTION(INT_DMA_C_ISR,".TI.ramfunc");
-__interrupt void INT_DMA_C_ISR(void)
+#pragma CODE_SECTION(INT_DMA_A_ISR,".TI.ramfunc");
+__interrupt void INT_DMA_A_ISR(void)
 {
 
     samp_UpdateAll();
+
+    acac_Func(samp_getReal(eCurr_OutA),samp_getReal(eVolt_OutA),samp_getReal(eVolt_InA));
+    samp_RmsFunc(eVolt_OutA);
 
     static uint16_t cnt = 0;
     if(cnt>=400)cnt=0;

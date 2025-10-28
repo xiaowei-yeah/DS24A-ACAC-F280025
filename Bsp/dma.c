@@ -22,7 +22,7 @@
 #pragma DATA_SECTION(AdcC_Destination_buff,"ramgs0");
 static uint16_t AdcC_Destination_buff[32];
 
-const void *Dma_SourceAddr = (uint16_t *)&AdccResultRegs.ADCRESULT0;
+const void *Dma_SourceAddr = (uint16_t *)&AdcaResultRegs.ADCRESULT0;
 const void *Dma_DestinationAddr = AdcC_Destination_buff;
 
 
