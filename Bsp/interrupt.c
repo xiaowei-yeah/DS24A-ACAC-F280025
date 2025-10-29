@@ -49,8 +49,13 @@ __interrupt void INT_DMA_A_ISR(void)
 
     samp_UpdateAll();
 
+    Fault_IsrTask();
+
     acac_Func(samp_getReal(eCurr_OutA),samp_getReal(eVolt_OutA),samp_getReal(eVolt_InA));
+
     samp_RmsFunc(eVolt_OutA);
+    samp_RmsFunc(eVolt_InA);
+
 
     static uint16_t cnt = 0;
     if(cnt>=400)cnt=0;

@@ -1,7 +1,7 @@
 /*
 * File: 	fault.h
 * Date: 	2025年10月28日
-* Author: 	jinjiale
+* Author: 	jin
 
 * Description: 	
 * Version: 		
@@ -55,10 +55,11 @@ typedef struct
 enum FaultID
 {
     //慢速故障
-    FM_OverVoltRms_In       = 0,     //
-    FM_UnderVoltRms_In      = 1,     //
+    FM_OverVolt_In       = 0,     //
+    FM_UnderVolt_In      = 1,     //
     FM_OverVolt_Out         = 2,     //
     FM_OverCurr_Out         = 3,     //
+    FM_Spll                 = 4,
     FM_FaultID_End
 };
 
@@ -74,6 +75,7 @@ uint16_t Fault_GetFaultStatus(void);
 void Fault_EnableSet(enum FaultID Fault_ID,enum FM_EnOrDis Fault_EnOrDis);
 void Fault_ClearFault(enum FaultID Fault_ID);
 void Fault_SetFault(enum FaultID Fault_ID);
+void Fault_IsrTask(void);
 
 #endif /* APP_FAULT_H_ */
 

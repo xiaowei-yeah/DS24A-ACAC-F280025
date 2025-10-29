@@ -1,10 +1,10 @@
 /*
-* File: 	acac.c
-* Date: 	2025年10月24日
-* Author: 	jinjiale
+* File:     acac.c
+* Date:     2025年10月24日
+* Author:   jin
 
-* Description: 	
-* Version: 		
+* Description:
+* Version:
 */
 //------------------------------------------Include----------------------------------------
 
@@ -43,14 +43,17 @@ typedef struct {
     float       wm;
 
     float       baseSin;
+    float       lastSin;
 
     float       wn;
     float       ts;
 
     enum en_dis_enum    en;
-    enum en_dis_enum    iflg;
-    enum en_dis_enum    vflg;
+    enum en_dis_enum    currflg;
+    enum en_dis_enum    voltflg;
     enum en_dis_enum    openloopflg;
+
+    enum en_dis_enum    firstOverZeroflg;
 
     ctrl_spll_TyprDef       spll;
 //    ctrl_2p2z_TyprDef       ctrl_iPR;
@@ -86,11 +89,13 @@ void acac_init(acac_TypeDef *self)
     self->wn = (m2Pi * 50);
     self->wm = 0;
     self->baseSin = 0;
+    self->lastSin = 0;
 
     self->en = eDisable;
-    self->iflg = eDisable;
-    self->vflg = eDisable;
 
+//    self->currflg = eDisable;
+//    self->voltflg = eDisable;
+//    self->firstOverZeroflg = eDisable;
 
     ctrl_spll_Init(&self->spll,self->ts,self->wn);
     ctrl_pi_Init(&self->ctrl_iPI,1,10,100,-100,self->ts);
@@ -100,6 +105,9 @@ void acac_init(acac_TypeDef *self)
 void acac_Init()
 {
     acac_init(&acac);
+    acac.currflg = eDisable;
+    acac.voltflg = eDisable;
+    acac.firstOverZeroflg = eDisable;
 }
 
 /****************************************************************
@@ -109,28 +117,56 @@ void acac_Init()
 * Output: None
 * Return: None
 ****************************************************************/
+#pragma CODE_SECTION(acac_func,".TI.ramfunc");
 void acac_func(acac_TypeDef *self ,float Io ,float Vo ,float Vin)
 {
+
     static uint16_t first;
 
     self->ouputCurr = Io;
     self->ouputVolt = Vo;
-    self->inputVolt = Vin;
+    self->inputVolt = Vin == 0 ? 0.000001f : Vin;   // 防除零
 
-    // 锁相
+#define INPUT_AC    1
+
+#if INPUT_AC    //正常工况 交流输入
+
     ctrl_spll_Run(&self->spll,self->inputVolt);
     self->baseSin = -cosf(self->spll.wt);
 
-// 直流电源输入
-//    static float wt1;
-//    wt1 += 0.01571f;
-//    if(wt1 > m2Pi)
-//    {
-//        wt1 = wt1 - m2Pi;
-//    }
-//    self->baseSin = sinf(wt1);
+    // 锁相完成,启动后检测首次过零
+    if(self->en == eEnable && self->firstOverZeroflg == eDisable && self->spll.ok)
+    {
+        if(self->baseSin >= 0 && self->lastSin < 0)
+        {
+            self->firstOverZeroflg = eEnable;
+        }
+        self->lastSin = self->baseSin;
+    }
 
-    if(self->en)
+#else           //测试工况 直流输入
+
+    static float wt1;
+    wt1 += 0.01571f;
+    if(wt1 > m2Pi)
+    {
+        wt1 = wt1 - m2Pi;
+    }
+    self->baseSin = sinf(wt1) * 0.5f + 0.5f;
+
+    // 直接跳过正常的检测，置位各标志位
+    if(self->en == eEnable && self->firstOverZeroflg == eDisable)
+    {
+        self->firstOverZeroflg = eEnable;
+        self->spll.ok = eEnable;
+    }
+
+#endif
+
+
+
+    // 控制算法
+    if(self->en == eEnable && self->firstOverZeroflg == eEnable && self->spll.ok)    // 过零点开始运行，冲击小。
     {
         if(first == 1)
         {
@@ -139,7 +175,7 @@ void acac_func(acac_TypeDef *self ,float Io ,float Vo ,float Vin)
         }
 
         // 电压环
-        if(self->vflg)
+        if(self->voltflg)
         {
             self->targetVolt = self->targetVoltAm * self->baseSin;
             float ctrl_out = ctrl_pi_Run(&self->ctrl_vPI,self->targetVolt,self->ouputVolt);
@@ -147,20 +183,20 @@ void acac_func(acac_TypeDef *self ,float Io ,float Vo ,float Vin)
 
         }
         // 电流环
-        if(self->iflg)
+        if(self->currflg)
         {
             self->targetCurr = self->targetCurrAm * self->baseSin;
             float ctrl_out = ctrl_pi_Run(&self->ctrl_iPI,self->targetCurr,self->ouputCurr);
             self->wm = (ctrl_out + self->ouputVolt) / self->inputVolt;
         }
         // 开环
-        if(self->openloopflg)   // 直流输入时使用 ！！！！
+        if(self->openloopflg)
         {
-            self->wm = (self->targetVoltAm * 2.0 / self->inputVolt * self->baseSin * 0.5) + 0.5 ;
+            self->wm = self->targetVoltAm * self->baseSin / self->inputVolt;
         }
 
         // 调制输出
-        if(self->inputVolt > 0)
+        if(self->baseSin >= 0)
         {
             pwm_setduty_a(self->wm);
             pwm_setduty_b(0);
@@ -170,25 +206,60 @@ void acac_func(acac_TypeDef *self ,float Io ,float Vo ,float Vin)
             pwm_setduty_a(0);
             pwm_setduty_b(self->wm);
         }
-
     }
     else    // !en
     {
-        pwm_alloff();
+        pwm_alloff();   //关闭PWM引脚
 
-        if(first == 0)
+        if(first == 0)  // 首次关闭，初始化控制器
         {
-            acac_Init();
+            acac_init(self);
             first = 1;
         }
     }
 
 }
+#pragma CODE_SECTION(acac_Func,".TI.ramfunc");
 void acac_Func(float Io ,float Vo ,float Vin)
 {
     acac_func(&acac,Io,Vo,Vin);
 }
 
+/****************************************************************
+* Function:
+* Description:
+* Input:
+* Output: None
+* Return: None
+****************************************************************/
+void acac_Start(void)
+{
+    acac.en = eEnable;
+}
+
+void acac_Stop(void)
+{
+    acac.en = eDisable;
+}
+
+void acac_SetVoltLoop(void)
+{
+    acac.en = eDisable;
+    acac.openloopflg = eDisable;
+    acac.currflg = eDisable;
+    acac.voltflg = eEnable;
+}
+void acac_SetCurrLoop(void)
+{
+    acac.en = eDisable;
+    acac.openloopflg = eDisable;
+    acac.voltflg = eDisable;
+    acac.currflg = eEnable;
+}
+uint16_t acac_GetSpllState(void)
+{
+    return acac.spll.ok;
+}
 
 
 //--------------------------------------end of this file-----------------------------------

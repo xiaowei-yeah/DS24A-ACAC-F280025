@@ -18,6 +18,12 @@
 //------------------------------------Function declaration---------------------------------
 
 void acac_Func(float Io ,float Vo ,float Vin);
+void acac_Start(void);
+void acac_Stop(void);
+void acac_SetVoltLoop(void);
+void acac_SetCurrLoop(void);
+uint16_t acac_GetSpllState(void);
+uint16_t acac_GetSpllState(void);
 
 #endif /* APP_ACAC_H_ */
 
