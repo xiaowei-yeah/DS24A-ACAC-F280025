@@ -93,9 +93,7 @@ void acac_init(acac_TypeDef *self)
 
     self->en = eDisable;
 
-//    self->currflg = eDisable;
-//    self->voltflg = eDisable;
-//    self->firstOverZeroflg = eDisable;
+    acac.firstOverZeroflg = eDisable;
 
     ctrl_spll_Init(&self->spll,self->ts,self->wn);
     ctrl_pi_Init(&self->ctrl_iPI,1,10,100,-100,self->ts);
@@ -107,7 +105,7 @@ void acac_Init()
     acac_init(&acac);
     acac.currflg = eDisable;
     acac.voltflg = eDisable;
-    acac.firstOverZeroflg = eDisable;
+    acac.openloopflg = eDisable;
 }
 
 /****************************************************************
