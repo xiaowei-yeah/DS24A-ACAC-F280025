@@ -23,18 +23,22 @@ void main(void)
     //
 
 
+
     Device_init();
 
     //
     // Initializes PIE and clear PIE registers. Disables CPU interrupts.
     // and clear all CPU interrupt flags.
+
     //
+
+
     Interrupt_initModule();
 
     //
     // Initialize the PIE vector table with pointers to the shell interrupt
     // Service Routines (ISR).
-    //
+    //5
     Interrupt_initVectorTable();
 
 
@@ -50,6 +54,8 @@ void main(void)
     GlobalsVarInit();
 
     samp_Init();
+
+    acac_Init();
 
     Fault_Init();
 

@@ -98,7 +98,7 @@ float ctrl_pi_Run(ctrl_pi_TyprDef *self, float ref,float fbk)
     self->ref = ref;
     self->fbk = fbk;
     float err = self->ref - self->fbk;
-    self->vi = err * self->ki * self->ts;
+    self->vi += err * self->ki * self->ts;
     float uo = err * self->kp + self->vi;
 
     uo = uo > self->max ? self->max : uo;
@@ -125,7 +125,7 @@ void ctrl_spll_Init(ctrl_spll_TyprDef *self, float ts, float wn)
     self->uq = 0;
     ctrl_sogi_Init(&self->sogi,1,ts,wn);
     ctrl_pi_Init(&self->pi,2,60,1000,-1000,ts);
-    self->chkThreshold = 1.0;
+    self->chkThreshold = 3.0;
     self->ok = 0;
 }
 

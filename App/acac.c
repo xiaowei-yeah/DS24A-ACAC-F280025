@@ -56,9 +56,9 @@ typedef struct {
     enum en_dis_enum    firstOverZeroflg;
 
     ctrl_spll_TyprDef       spll;
-//    ctrl_2p2z_TyprDef       ctrl_iPR;
     ctrl_pi_TyprDef         ctrl_iPI;
     ctrl_pi_TyprDef         ctrl_vPI;
+    ctrl_pi_TyprDef         ctrl_vRmsPI;
 
 }acac_TypeDef;
 
@@ -98,13 +98,14 @@ void acac_init(acac_TypeDef *self)
     ctrl_spll_Init(&self->spll,self->ts,self->wn);
     ctrl_pi_Init(&self->ctrl_iPI,1,10,100,-100,self->ts);
     ctrl_pi_Init(&self->ctrl_vPI,2,20,100,-100,self->ts);
+    ctrl_pi_Init(&self->ctrl_vRmsPI,1.4,100,50,0,self->ts);
 
 }
 void acac_Init()
 {
     acac_init(&acac);
     acac.currflg = eDisable;
-    acac.voltflg = eDisable;
+    acac.voltflg = eEnable;
     acac.openloopflg = eDisable;
 }
 
@@ -175,9 +176,11 @@ void acac_func(acac_TypeDef *self ,float Io ,float Vo ,float Vin)
         // 电压环
         if(self->voltflg)
         {
-            self->targetVolt = self->targetVoltAm * self->baseSin;
+            float ctrlRms_out = ctrl_pi_Run(&self->ctrl_vRmsPI,self->targetVoltAm*0.707,samp_getRms(eVolt_OutA));
+
+            self->targetVolt = ctrlRms_out * self->baseSin;
             float ctrl_out = ctrl_pi_Run(&self->ctrl_vPI,self->targetVolt,self->ouputVolt);
-            self->wm = (ctrl_out + self->ouputVolt) / self->inputVolt;
+            self->wm = (ctrl_out + self->ouputVolt) / (-self->spll.ud * self->baseSin);
 
         }
         // 电流环
@@ -185,12 +188,12 @@ void acac_func(acac_TypeDef *self ,float Io ,float Vo ,float Vin)
         {
             self->targetCurr = self->targetCurrAm * self->baseSin;
             float ctrl_out = ctrl_pi_Run(&self->ctrl_iPI,self->targetCurr,self->ouputCurr);
-            self->wm = (ctrl_out + self->ouputVolt) / self->inputVolt;
+            self->wm = (ctrl_out + self->ouputVolt) / (50 * self->baseSin);
         }
         // 开环
         if(self->openloopflg)
         {
-            self->wm = self->targetVoltAm * self->baseSin / self->inputVolt;
+            self->wm = self->targetVoltAm * self->baseSin / (50 * self->baseSin);
         }
 
         // 调制输出
