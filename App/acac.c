@@ -96,16 +96,16 @@ void acac_init(acac_TypeDef *self)
     acac.firstOverZeroflg = eDisable;
 
     ctrl_spll_Init(&self->spll,self->ts,self->wn);
-    ctrl_pi_Init(&self->ctrl_iPI,1,10,100,-100,self->ts);
-    ctrl_pi_Init(&self->ctrl_vPI,2,20,100,-100,self->ts);
+    ctrl_pi_Init(&self->ctrl_iPI,10,0,100,-100,self->ts);
+    ctrl_pi_Init(&self->ctrl_vPI,2,15,100,-100,self->ts);
     ctrl_pi_Init(&self->ctrl_vRmsPI,1.4,100,50,0,self->ts);
 
 }
 void acac_Init()
 {
     acac_init(&acac);
-    acac.currflg = eDisable;
-    acac.voltflg = eEnable;
+    acac.currflg = eEnable;
+    acac.voltflg = eDisable;
     acac.openloopflg = eDisable;
 }
 
@@ -262,5 +262,24 @@ uint16_t acac_GetSpllState(void)
     return acac.spll.ok;
 }
 
-
+void acac_SetTargetVoltAm(float v)
+{
+    v = v > 50 ? 50 : v;
+    v = v < 0 ? 0 : v;
+    acac.targetVoltAm = v;
+}
+float acac_GetTargetVoltAm()
+{
+    return acac.targetVoltAm;
+}
+void acac_SetTargetCurrAm(float v)
+{
+    v = v > 2 ? 2 : v;
+    v = v < 0 ? 0 : v;
+    acac.targetCurrAm = v;
+}
+float acac_GetTargetCurrAm()
+{
+    return acac.targetCurrAm;
+}
 //--------------------------------------end of this file-----------------------------------

@@ -13,6 +13,7 @@
 
 
 extern void tick_Update(void);
+extern void key_Init();
 //
 // Main
 //
@@ -58,6 +59,8 @@ void main(void)
     acac_Init();
 
     Fault_Init();
+
+    key_Init();
 
     Scheduler_Setup();
 

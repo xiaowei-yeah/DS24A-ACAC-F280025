@@ -54,6 +54,13 @@ __interrupt void INT_DMA_A_ISR(void)
 
     Fault_IsrTask();
 
+    if(samp_getReal(eCurr_OutA) > 6 || samp_getReal(eCurr_OutA) < -6)
+    {
+        pwm_alloff();
+        acac_Stop();
+        task_TurnShutdownMode_Func();
+    }
+
     acac_Func(samp_getReal(eCurr_OutA),samp_getReal(eVolt_OutA),samp_getReal(eVolt_InA));
 
     samp_RmsFunc(eVolt_OutA);

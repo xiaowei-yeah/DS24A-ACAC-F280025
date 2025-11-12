@@ -177,6 +177,12 @@ void PinMux_init()
 	GPIO_setPinConfig(GPIO_45_GPIO45);
 	// GPIO41 -> PWM_EN Pinmux
 	GPIO_setPinConfig(GPIO_41_GPIO41);
+	// GPIO4 -> Key1 Pinmux
+	GPIO_setPinConfig(GPIO_4_GPIO4);
+	// GPIO25 -> Key2 Pinmux
+	GPIO_setPinConfig(GPIO_25_GPIO25);
+	// GPIO40 -> Key3 Pinmux
+	GPIO_setPinConfig(GPIO_40_GPIO40);
 
 }
 
@@ -496,6 +502,9 @@ void GPIO_init(){
 	LED1_init();
 	LED2_init();
 	PWM_EN_init();
+	Key1_init();
+	Key2_init();
+	Key3_init();
 }
 
 void LED1_init(){
@@ -514,6 +523,21 @@ void PWM_EN_init(){
 	GPIO_setQualificationMode(PWM_EN, GPIO_QUAL_SYNC);
 	GPIO_setDirectionMode(PWM_EN, GPIO_DIR_MODE_OUT);
 }
+void Key1_init(){
+	GPIO_setPadConfig(Key1, GPIO_PIN_TYPE_STD | GPIO_PIN_TYPE_PULLUP);
+	GPIO_setQualificationMode(Key1, GPIO_QUAL_SYNC);
+	GPIO_setDirectionMode(Key1, GPIO_DIR_MODE_IN);
+}
+void Key2_init(){
+	GPIO_setPadConfig(Key2, GPIO_PIN_TYPE_STD | GPIO_PIN_TYPE_PULLUP);
+	GPIO_setQualificationMode(Key2, GPIO_QUAL_SYNC);
+	GPIO_setDirectionMode(Key2, GPIO_DIR_MODE_IN);
+}
+void Key3_init(){
+	GPIO_setPadConfig(Key3, GPIO_PIN_TYPE_STD | GPIO_PIN_TYPE_PULLUP);
+	GPIO_setQualificationMode(Key3, GPIO_QUAL_SYNC);
+	GPIO_setDirectionMode(Key3, GPIO_DIR_MODE_IN);
+}
 
 //*****************************************************************************
 //
@@ -521,6 +545,11 @@ void PWM_EN_init(){
 //
 //*****************************************************************************
 void INTERRUPT_init(){
+	
+	// Interrupt Settings for INT_ADC_A_1
+	// ISR need to be defined for the registered interrupts
+	Interrupt_register(INT_ADC_A_1, &INT_ADC_A_1_ISR);
+	Interrupt_enable(INT_ADC_A_1);
 	
 	// Interrupt Settings for INT_DMA_A
 	// ISR need to be defined for the registered interrupts
@@ -531,11 +560,6 @@ void INTERRUPT_init(){
 	// ISR need to be defined for the registered interrupts
 	Interrupt_register(INT_ePWM_Ap_TZ, &INT_ePWM_Ap_TZ_ISR);
 	Interrupt_enable(INT_ePWM_Ap_TZ);
-	
-	// Interrupt Settings for INT_ADC_A_1
-	// ISR need to be defined for the registered interrupts
-	Interrupt_register(INT_ADC_A_1, &INT_ADC_A_1_ISR);
-	Interrupt_enable(INT_ADC_A_1);
 }
 //*****************************************************************************
 //

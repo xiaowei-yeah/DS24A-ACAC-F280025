@@ -121,6 +121,18 @@ extern "C"
 // GPIO41 - GPIO Settings
 //
 #define PWM_EN_GPIO_PIN_CONFIG GPIO_41_GPIO41
+//
+// GPIO4 - GPIO Settings
+//
+#define Key1_GPIO_PIN_CONFIG GPIO_4_GPIO4
+//
+// GPIO25 - GPIO Settings
+//
+#define Key2_GPIO_PIN_CONFIG GPIO_25_GPIO25
+//
+// GPIO40 - GPIO Settings
+//
+#define Key3_GPIO_PIN_CONFIG GPIO_40_GPIO40
 
 //*****************************************************************************
 //
@@ -234,12 +246,24 @@ void LED1_init();
 void LED2_init();
 #define PWM_EN 41
 void PWM_EN_init();
+#define Key1 4
+void Key1_init();
+#define Key2 25
+void Key2_init();
+#define Key3 40
+void Key3_init();
 
 //*****************************************************************************
 //
 // INTERRUPT Configurations
 //
 //*****************************************************************************
+
+// Interrupt Settings for INT_ADC_A_1
+// ISR need to be defined for the registered interrupts
+#define INT_ADC_A_1 INT_ADCA1
+#define INT_ADC_A_1_INTERRUPT_ACK_GROUP INTERRUPT_ACK_GROUP1
+extern __interrupt void INT_ADC_A_1_ISR(void);
 
 // Interrupt Settings for INT_DMA_A
 // ISR need to be defined for the registered interrupts
@@ -252,12 +276,6 @@ extern __interrupt void INT_DMA_A_ISR(void);
 #define INT_ePWM_Ap_TZ INT_EPWM2_TZ
 #define INT_ePWM_Ap_TZ_INTERRUPT_ACK_GROUP INTERRUPT_ACK_GROUP2
 extern __interrupt void INT_ePWM_Ap_TZ_ISR(void);
-
-// Interrupt Settings for INT_ADC_A_1
-// ISR need to be defined for the registered interrupts
-#define INT_ADC_A_1 INT_ADCA1
-#define INT_ADC_A_1_INTERRUPT_ACK_GROUP INTERRUPT_ACK_GROUP1
-extern __interrupt void INT_ADC_A_1_ISR(void);
 
 //*****************************************************************************
 //

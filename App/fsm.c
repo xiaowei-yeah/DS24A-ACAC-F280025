@@ -1,7 +1,7 @@
 /*
 * File: 	fsm.c
 * Date: 	2025Äê10ÔÂ21ÈÕ
-* Author: 	jinjiale
+* Author: 	jin
 
 * Description: 	
 * Version: 		
@@ -57,7 +57,7 @@ static void sPowerOnMode(void)
     {
     case State_Sub_Init:
     {
-        if(sfsm_Delay(3000))
+        if(sfsm_Delay(1000))
         {
             sfsm_SetSubState(State_Sub_1);
         }
@@ -65,7 +65,7 @@ static void sPowerOnMode(void)
     break;
     case State_Sub_1:
     {
-        if(sfsm_Delay(3000))
+        if(sfsm_Delay(1000))
         {
             sfsm_SetSubState(State_Sub_End);
         }
@@ -73,7 +73,7 @@ static void sPowerOnMode(void)
     break;
     case State_Sub_End:
     {
-        if(sfsm_Delay(3000))
+        if(sfsm_Delay(1000))
         {
             sfsm_SetState(State_StandBy);
         }
@@ -97,6 +97,8 @@ static void sShutdownMode(void)
     if( sfsm_ChkStateChange() )
     {      ; }
 
+    acac_Stop();
+
 }
 static void sStandByMode(void)
 {
@@ -107,7 +109,7 @@ static void sStandByMode(void)
     {
     case State_Sub_Init:
     {
-        if(sfsm_Delay(3000))
+        if(sfsm_Delay(1000))
         {
             sfsm_SetSubState(State_Sub_1);
         }
@@ -115,7 +117,7 @@ static void sStandByMode(void)
     break;
     case State_Sub_1:
     {
-        if(sfsm_Delay(3000))
+        if(sfsm_Delay(1000))
         {
             sfsm_SetSubState(State_Sub_End);
         }
@@ -123,9 +125,9 @@ static void sStandByMode(void)
     break;
     case State_Sub_End:
     {
-        if(sfsm_Delay(3000))
+        if(sfsm_Delay(1000))
         {
-            sfsm_SetSubState(State_Sub_Init);
+            sfsm_SetState(State_NormalInv);
         }
     }
     break;
@@ -153,6 +155,8 @@ static void sNormalInvMode(void)
     if( sfsm_ChkStateChange() )
     { return; }
 
+    acac_Start();
+
 }
 static void sLimitInvMode(void)
 {
@@ -164,6 +168,8 @@ static void sFaultMode(void)
 {
     if( sfsm_ChkStateChange() )
     { return; }
+
+    acac_Stop();
 
 }
 static void sDebugMode(void)
